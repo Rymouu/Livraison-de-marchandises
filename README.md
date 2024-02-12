@@ -8,4 +8,3 @@ Créer un système de livraison autonome avec une centrale et un livreur.
 <h4><u>Évolution future :</u></h4>
 Étendre le système pour permettre à plusieurs centrales de fonctionner en concurrence, en intégrant des fonctionnalités avancées et des stratégies de négociation sophistiquées.
 </p>
-
