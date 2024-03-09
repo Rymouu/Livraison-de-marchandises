@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime
 
 conn = sqlite3.connect('projet.db')
 
@@ -14,8 +15,8 @@ class Message:
         self.id_centrale = ""
         self.id_mission = ""
     
-    def setContenu(self, contenu):
-        self.contenu = contenu
+    def setContenu(self, contenu):  #self represente un message particulier 
+        self.contenu = contenu       # ici contenu d'un message en particulier
     
     def envoyer(self, date, contenu, id_livreur, id_centrale, id_mission):
         global cursor
@@ -32,7 +33,7 @@ class Livreur:
         self.id = id
         self.nom = ""
         self.prenom = ""
-        self.statut_livreur = ""
+        self.statut_livreur = True
         self.id_camion = ""
         self.id_localisation = ""
         
@@ -41,8 +42,8 @@ class Livreur:
 
     def existe_dans_base(self):
         # Requête SQL pour vérifier l'existence de l'ID dans la table livreur
-        cursor.execute("SELECT * FROM livreur WHERE id_livreur = ?", (self.id,))
-        row = cursor.fetchone()  # Récupérer la première ligne
+        cursor.execute("SELECT * FROM livreur WHERE id_livreur = ?", (self.id,))  # , après id pour créer un tuple avec un seul élément
+        row = cursor.fetchone()  # Récupérer le premier attribut du tuple
 
         # Fermer la connexion à la base de données
         conn.close()
@@ -57,6 +58,29 @@ class Livreur:
             self.id_localisation = row[5]
         else:
             raise ValueError("Aucun livreur avec cet ID trouvé dans la base de données")
+        
+    def est_volontaire(self):
+        return self.statut_livreur and self.id_camion != ""
+        
+class Centrale:
+
+    def __init__(self, id):
+        self.id = id
+        self.nom = ""
+        self.id_localisation = ""
+        self.missions = []  
+
+    def ajouter_mission(self,mission):
+        self.missions.append(mission)
+
+    def attribuer_mission(self,livreur,mission):
+        if livreur.est_volontaire():
+            livreur.ajouter_mission(mission)
+            self.ajouter_mission(mission)
+    
+    def repondre_aux_messages(self):
+        
+
 
 class Camion:
 
@@ -85,3 +109,24 @@ class Camion:
             self.etat = row[3]
         else:
             raise ValueError("Aucun camion avec cet ID trouvé dans la base de données")
+        
+    def mettre_a_jour_capacite(self,nouvelle_capacite):
+        if self.etat == "Disponible":
+           self.capacite = nouvelle_capacite
+        else:
+            self.capacite = 0
+        
+class Mission:
+
+    def __init__(self, id):
+        self.id = id
+        self.details = ""
+        self.etat = "Pas commencée"
+        self.quantite = ""
+        self.salaire = 0
+        self.date_envoi = datetime.now()
+        self.date_limite = None
+        self.id_message = ""
+
+    def ajouter_livraison(self, livraison):
+        self.livraisons.append(livraison)
