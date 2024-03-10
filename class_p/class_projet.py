@@ -61,6 +61,16 @@ class Livreur:
         
     def est_volontaire(self):
         return self.statut_livreur and self.id_camion != ""
+    
+    def afficher_informations(self):
+        print("Nom:", self.nom)
+        print("Prénom:", self.prenom)
+        print("Statut:", self.statut_livreur)
+        print("ID localisation:", self.id_localisation)
+        camion = Camion(self.id_camion)
+        print("Capacité du camion:", camion.capacite)
+        print("Autonomie du camion:", camion.autonomie)
+        print("Etat du camion: ", camion.etat)
         
 class Centrale:
 
@@ -79,6 +89,7 @@ class Centrale:
             self.ajouter_mission(mission)
     
     def repondre_aux_messages(self):
+        pass
         
 
 
