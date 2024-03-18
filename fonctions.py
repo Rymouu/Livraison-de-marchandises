@@ -17,3 +17,4 @@ def ajouter_livreur_bdd(nom, prenom, statut_livreur, capacite, autonomie, etat, 
     cursor.execute("INSERT INTO livreur VALUES (?,?,?,?,?)", (nom, prenom, statut_livreur, id_camion, id_localisation))
     conn.commit()
     print("Livreur ajouté à la base de données")
+
