@@ -1,5 +1,7 @@
 import sqlite3
 from datetime import datetime
+import geopy,certifi,ssl
+from geopy.geocoders import Nominatim
 
 conn = sqlite3.connect('projet.db')
 
@@ -44,9 +46,6 @@ class Livreur:
         # Requête SQL pour vérifier l'existence de l'ID dans la table livreur
         cursor.execute("SELECT * FROM livreur WHERE id_livreur = ?", (self.id,))  # , après id pour créer un tuple avec un seul élément
         row = cursor.fetchone()  # Récupérer le premier attribut du tuple
-
-        # Fermer la connexion à la base de données
-        conn.close()
 
         # Vérifier si une ligne a été retournée par la requête
         if row is not None:
@@ -124,13 +123,57 @@ class Mission:
 
     def __init__(self, id):
         self.id = id
+        self.etat = False
         self.details = ""
-        self.etat = "Pas commencée"
-        self.quantite = ""
+        self.quantite = 0
         self.salaire = 0
-        self.date_envoi = datetime.now()
-        self.date_limite = None
-        self.id_message = ""
+        self.date_envoie = ""
+        self.date_limite = ""
+        self.id_livreur = ""
+        self.id_localisation_d = ""
+        self.id_localisation_a = ""
+        self.existe_dans_base()
 
-    def ajouter_livraison(self, livraison):
-        self.livraisons.append(livraison)
+    def existe_dans_base(self):
+        # Requête SQL pour vérifier l'existence de l'ID dans la table Mission
+        cursor.execute("SELECT * FROM mission WHERE id_message = ?", (self.id,))
+        row = cursor.fetchone()
+
+        if row is not None:
+            self.etat = row[1]
+            self.details = row[2]
+            self.quantite = row[3]
+            self.salaire = row[4]
+            self.date_envoie = row[5]
+            self.date_limite = row[6]
+            self.id_livreur = row[7]
+            self.id_localisation_d = row[8]
+            self.id_localisation_a = row[9]
+
+class Localisation:
+
+    def __init__(self, id):
+        self.id = id
+        self.longitude = 0
+        self.latitude = 0
+        self.adresse = ""
+        self.existe_dans_base()
+
+    def existe_dans_base(self):
+        # Requête SQL pour vérifier l'existence de l'ID dans la table Localisation
+        cursor.execute("SELECT * FROM localisation WHERE id_localisation = ?", (self.id,))  # , après id pour créer un tuple avec un seul élément
+        row = cursor.fetchone()  # Récupérer le premier attribut du tuple
+
+        # Vérifier si une ligne a été retournée par la requête
+        if row is not None:
+            # Assigner les valeurs de la base de données aux attributs de l'objet Livreur
+            self.longitude = float(row[1])
+            self.latitude = float(row[2])
+        else:
+            raise ValueError("Aucune localisation avec cet ID trouvé dans la base de données")
+    
+    def get_adresse(self):
+        geopy.geocoders.options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+        geolocator = Nominatim(user_agent="projet")
+        location = geolocator.reverse((self.latitude, self.longitude))
+        self.adress = location.address

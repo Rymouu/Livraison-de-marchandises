@@ -1,5 +1,7 @@
 import sqlite3
 from datetime import datetime
+import geopy,certifi,ssl
+from geopy.geocoders import Nominatim
 
 conn = sqlite3.connect('projet.db')
 
@@ -141,3 +143,34 @@ class Mission:
 
     def ajouter_livraison(self, livraison):
         self.livraisons.append(livraison)
+
+class Localisation:
+
+    def __init__(self, id):
+        self.id = id
+        self.longitude = 0
+        self.latitude = 0
+        self.adresse = ""
+        self.existe_dans_base()
+
+    def existe_dans_base(self):
+        # Requête SQL pour vérifier l'existence de l'ID dans la table Localisation
+        cursor.execute("SELECT * FROM localisation WHERE id_localisation = ?", (self.id,))  # , après id pour créer un tuple avec un seul élément
+        row = cursor.fetchone()  # Récupérer le premier attribut du tuple
+
+        # Fermer la connexion à la base de données
+        conn.close()
+
+        # Vérifier si une ligne a été retournée par la requête
+        if row is not None:
+            # Assigner les valeurs de la base de données aux attributs de l'objet Livreur
+            self.longitude = float(row[1])
+            self.latitude = float(row[2])
+        else:
+            raise ValueError("Aucune localisation avec cet ID trouvé dans la base de données")
+    
+    def get_adresse(self):
+        geopy.geocoders.options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+        geolocator = Nominatim(user_agent="projet")
+        location = geolocator.reverse((self.latitude, self.longitude))
+        self.adress = location.address

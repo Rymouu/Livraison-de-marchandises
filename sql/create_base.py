@@ -33,15 +33,6 @@ CREATE TABLE IF NOT EXISTS `livreur` (
 
 cursor.execute('''
 
-CREATE TABLE IF NOT EXISTS `localisation` (
-`id_localisation` INTEGER PRIMARY KEY AUTOINCREMENT,
-  `adresse` varchar(1000) NOT NULL,
-  `code_postale` int(11) NOT NULL,
-  `ville` varchar(100) NOT NULL
-) ; ''')
-
-cursor.execute('''
-
 CREATE TABLE IF NOT EXISTS `message` (
 `id` INTEGER PRIMARY KEY AUTOINCREMENT,
   `contenu` text NOT NULL,
@@ -62,7 +53,16 @@ CREATE TABLE IF NOT EXISTS `mission` (
   `date_envoie` date NOT NULL,
   `date_limite` date NOT NULL,
   `id_livreur` int(11) NOT NULL,
-  `id_localisation` int(11) NOT NULL
+  `id_localisation_depart` int(11) NOT NULL,
+  `id_localisation_arrivee` int(11) NOT NULL
 )  ; ''')
+
+cursor.execute('''
+
+CREATE TABLE IF NOT EXISTS `localisation` (
+`id_localisation` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `longitude` float NOT NULL,
+  `latitude` float NOT NULL
+) ; ''')
 
 conn.close()
