@@ -144,10 +144,28 @@ def afficher_details_mission(mission):
     details_window.title(f"Détails Mission {mission.id}")
 
     # Afficher les informations de la mission
+    label_id = tk.Label(details_window, text=f"ID: {mission.id}")
+    label_id.pack()
+
+    label_etat = tk.Label(details_window, text=f"État: {mission.etat}")
+    label_etat.pack()
+
     label_details = tk.Label(details_window, text=f"Détails: {mission.details}")
     label_details.pack()
 
+    label_quantite = tk.Label(details_window, text=f"Quantité: {mission.quantite}")
+    label_quantite.pack()
 
+    label_salaire = tk.Label(details_window, text=f"Salaire: {mission.salaire}")
+    label_salaire.pack()
+
+    label_date_limite = tk.Label(details_window, text=f"Date limite: {mission.date_limite}")
+    label_date_limite.pack()
+
+    loc = Localisation(mission.id_localisation_a)
+
+    label_id_localisation_a = tk.Label(details_window, text=f"Localisation d'arrivée: {loc.adresse}")
+    label_id_localisation_a.pack()
 
 # Fonction pour ouvrir la fenêtre d'ajout de mission
 def ouvrir_ajout_window():
