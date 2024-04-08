@@ -48,14 +48,6 @@ class Application(tk.Tk):
         else:
             self.message_label.config(text="Identifiant ou mot de passe incorrect", fg="red")
 
-    def afficher_dernieres_missions(self):
-        self.mission_list = tk.Listbox(self.mission_frame, width=40, height=15)
-        self.mission_list.pack()
-
-        # Ajouter les missions à la liste
-        for mission in range(1, 11):
-            self.mission_list.insert(tk.END, f"Mission {mission}")
-
 if __name__ == "__main__":
     app = Application()
     app.mainloop()

@@ -1,22 +1,16 @@
 import tkinter as tk
+from tkinter import Tk, Canvas, PhotoImage
 from tkinter import messagebox
+from selenium import webdriver
 from datetime import datetime
 from class_projet import *
 import sqlite3
 import geopy,certifi,ssl
 from geopy.geocoders import Nominatim
 from fonctions import *
-
-
-def recuperer_missions():
-
-    conn = sqlite3.connect('projet.db')
-    cursor = conn.cursor()
-    # Récupérer les missions depuis la base de données
-    cursor.execute("SELECT id_message FROM mission")
-    missions = cursor.fetchall()
-    conn.close()
-    return [Mission(*mission) for mission in missions]
+from PIL import Image, ImageTk
+import folium
+from folium import Map
 
 
 def menu(root):
@@ -145,27 +139,50 @@ def afficher_details_mission(mission):
 
     # Afficher les informations de la mission
     label_id = tk.Label(details_window, text=f"ID: {mission.id}")
-    label_id.pack()
+    label_id.grid(row=1, column=0, sticky="w")
 
     label_etat = tk.Label(details_window, text=f"État: {mission.etat}")
-    label_etat.pack()
+    label_etat.grid(row=2, column=0, sticky="w")
 
     label_details = tk.Label(details_window, text=f"Détails: {mission.details}")
-    label_details.pack()
+    label_details.grid(row=3, column=0, sticky="w")
 
     label_quantite = tk.Label(details_window, text=f"Quantité: {mission.quantite}")
-    label_quantite.pack()
+    label_quantite.grid(row=4, column=0, sticky="w")
 
     label_salaire = tk.Label(details_window, text=f"Salaire: {mission.salaire}")
-    label_salaire.pack()
+    label_salaire.grid(row=5, column=0, sticky="w")
 
     label_date_limite = tk.Label(details_window, text=f"Date limite: {mission.date_limite}")
-    label_date_limite.pack()
+    label_date_limite.grid(row=6, column=0, sticky="w")
 
     loc = Localisation(mission.id_localisation_a)
 
     label_id_localisation_a = tk.Label(details_window, text=f"Localisation d'arrivée: {loc.adresse}")
-    label_id_localisation_a.pack()
+    label_id_localisation_a.grid(row=7, column=0, sticky="w")
+
+    # Créer une carte Folium
+    carte = folium.Map(location=[loc.longitude, loc.latitude], zoom_start=15)
+
+    # Ajouter un marqueur à l'emplacement de la localisation d'arrivée
+    folium.Marker(location=[loc.longitude, loc.latitude], popup=mission.id_localisation_a).add_to(carte)
+
+    # Convertir la carte en PNG et gérer les erreurs
+    try:
+        carte_png = carte.to_png()
+    except Exception as e:
+        print(f"Erreur lors de la conversion de la carte en PNG : {e}")
+        return  # Quitter la fonction en cas d'erreur
+
+    # Afficher la carte dans un Canvas
+    canvas = Canvas(details_window, width=500, height=400)
+    image = PhotoImage(data=carte_png)
+    canvas.create_image(0, 0, image=image, anchor="nw")
+    canvas.grid(row=8, column=0)
+
+    # Affichez la fenêtre
+    details_window.mainloop()
+
 
 # Fonction pour ouvrir la fenêtre d'ajout de mission
 def ouvrir_ajout_window():

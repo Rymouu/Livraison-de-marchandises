@@ -30,7 +30,6 @@ class Message:
         print("Message envoyé")
 
 class Livreur:
-
     def __init__(self, id):
         self.id = id
         self.nom = ""
@@ -44,8 +43,8 @@ class Livreur:
 
     def existe_dans_base(self):
         # Requête SQL pour vérifier l'existence de l'ID dans la table livreur
-        cursor.execute("SELECT * FROM livreur WHERE id_livreur = ?", (self.id,))  # , après id pour créer un tuple avec un seul élément
-        row = cursor.fetchone()  # Récupérer le premier attribut du tuple
+        cursor.execute("SELECT * FROM livreur WHERE id_livreur = ?", (self.id,))  
+        row = cursor.fetchone()  
 
         # Vérifier si une ligne a été retournée par la requête
         if row is not None:
@@ -63,6 +62,7 @@ class Livreur:
     
     def afficher_informations(self):
         return f"Nom: {self.nom}\nPrénom: {self.prenom}\nStatut: {self.statut_livreur}\nID localisation: {self.id_localisation}"
+
         
 class Centrale:
 
@@ -97,6 +97,8 @@ class Camion:
         self.existe_dans_base()
 
     def existe_dans_base(self):
+        conn = sqlite3.connect('projet.db')
+        cursor = conn.cursor()
         # Requête SQL pour vérifier l'existence de l'ID dans la table Camion
         cursor.execute("SELECT * FROM camion WHERE id_camion = ?", (self.id,))
         row = cursor.fetchone()  # Récupérer la première ligne
@@ -135,6 +137,8 @@ class Mission:
         self.existe_dans_base()
 
     def existe_dans_base(self):
+        conn = sqlite3.connect('projet.db')
+        cursor = conn.cursor()
         # Requête SQL pour vérifier l'existence de l'ID dans la table Mission
         cursor.execute("SELECT * FROM mission WHERE id_message = ?", (self.id,))
         row = cursor.fetchone()

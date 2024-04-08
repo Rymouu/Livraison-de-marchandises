@@ -9,13 +9,15 @@ cursor.execute(
       VALUES (15, 350, 'Très bien')"
 )
 cursor.execute(
-    "INSERT INTO camion (capacite, autonomie, etat) \
-      VALUES (10, 200, 'Moyen')"
+    "INSERT INTO livreur (nom, prenom, statut_livreur, id_camion, id_localisation) \
+      VALUES ('Dupont', 'Jean', 1, 1, 1)"
 )
 
 cursor.execute(
     "SELECT * \
-     FROM camion"
+     FROM livreur"
 )
 resultat = cursor.fetchall()
 print(resultat)
+conn.commit()
+conn.close()

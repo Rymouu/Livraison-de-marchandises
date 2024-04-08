@@ -61,3 +61,13 @@ def afficher_colonnes_table(nom_table):
 
     # Ferme la connexion
     conn.close()
+
+def recuperer_missions():
+
+    conn = sqlite3.connect('projet.db')
+    cursor = conn.cursor()
+    # Récupérer les missions depuis la base de données
+    cursor.execute("SELECT id_message FROM mission")
+    missions = cursor.fetchall()
+    conn.close()
+    return [Mission(*mission) for mission in missions]
