@@ -103,12 +103,12 @@ class Camion:
         self.capacite = 0
         self.etat = ""
         
-        # Vérifier si l'ID existe dans la base de données et initialiser les attributs
+        # Vérifier si l'ID existe dans la base de données et initialiser les attributs  (on a le droit en python d'appeler la fonction avant meme de la definir tant qu'on la defini a un endroit dans la classe)
         self.existe_dans_base()
 
     def existe_dans_base(self):
         # Requête SQL pour vérifier l'existence de l'ID dans la table Camion
-        cursor.execute("SELECT * FROM camion WHERE id_camion = ?", (self.id,))
+        cursor.execute("SELECT * FROM camion WHERE id_camion = ?", (self.id,))  #cursor objet de la classe sqlite3, permet d'executer des requetes sql
         row = cursor.fetchone()  # Récupérer la première ligne
 
         # Fermer la connexion à la base de données
@@ -142,7 +142,7 @@ class Mission:
         self.id_message = ""
 
     def ajouter_livraison(self, livraison):
-        self.livraisons.append(livraison)
+        self.livraisons.append(livraison)             #QUESTION 1
 
 class Localisation:
 
@@ -170,7 +170,10 @@ class Localisation:
             raise ValueError("Aucune localisation avec cet ID trouvé dans la base de données")
     
     def get_adresse(self):
-        geopy.geocoders.options.default_ssl_context = ssl.create_default_context(cafile=certifi.where())
+        geopy.geocoders.options.default_ssl_context = ssl.create_default_context(cafile=certifi.where()) #QUESTION 2
         geolocator = Nominatim(user_agent="projet")
         location = geolocator.reverse((self.latitude, self.longitude))
-        self.adress = location.address
+        self.adresse = location.address
+
+
+#fermer la connexion a la toute fin au lieu de fermer a l'interieur de chaque classe
